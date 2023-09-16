@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Confetti API -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!--     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Mon sac à dos académique</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+  <script defer>
+
+    /* Script to scale everything to fit the parent iframe */
+    function Scaler() {
+      try {
+        const container = document.getElementsByTagName("*")[0]
+        if (window.innerWidth <= 801) {
+            let wrapWidth = 800 // width of the wrapper
+            let wrapHeight = 516 // height of the wrapper
+            let childWidth = window.innerWidth; // width of child iframe
+            let childHeight = window.innerHeight; // child height
+            let wScale =  childWidth / wrapWidth;
+            let hScale =  childHeight / wrapHeight;
+            let scale = Math.min(wScale,hScale);  // get the lowest ratio
+            container.setAttribute(
+                "style", "transform: scale("+scale+"); transform-origin: left top;max-width: 800px;")
+        } 
+      } catch (error) {
+        // ...    
+      }
+
+    } 
+    window.addEventListener("DOMContentLoaded", Scaler, false)
+    window.addEventListener("resize", Scaler, false)
+    document.addEventListener("ready", Scaler, false)
+
+  </script>
+
+</html>
