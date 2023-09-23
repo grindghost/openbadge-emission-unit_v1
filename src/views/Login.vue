@@ -33,7 +33,7 @@
             <span>Ajoutez-le à votre sac à dos académique</span>
         </div>
             <!-- backpack button -->
-            <img src="@/assets/backpack-icon.svg" class="backpack-button" @click="ShowLoginRegisterForms" alt="">
+            <img v-if="badgeImageLoaded && store.projectFetched" src="@/assets/backpack-icon.svg" class="backpack-button" @click="ShowLoginRegisterForms" alt="">
 
         <!-- Small bottom blue line in ::after -->
     </div>
@@ -49,7 +49,13 @@
         </div> 
         <!-- Right side with the badge infos -->
         <div class="badge-infos fade-in">
-                <h3>{{ `${store.targetBadge.name} | ${store.targetBadge.badgeClass}` }}</h3>
+                <h3>{{ `${store.targetBadge.name}` }}</h3>
+                <a :href="`https://backpacks3-default-rtdb.firebaseio.com/badges/${store.targetBadge.badgeClass}.json`" target="_blank" style="text-decoration: none;">
+                  <div class="badge-informations">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                    <h4>Badge ID: <span style="font-weight: 800;">{{ `${store.targetBadge.badgeClass}` }}</span></h4>
+                  </div>
+                </a>
                 <p v-html="store.targetBadge.description"></p>
                 <button @click="ShowLoginRegisterForms">Récupérer ce badge</button>
 
@@ -74,7 +80,7 @@
 
         <div class="auth-directive">  
             <span><a href="#" @click="() => ShowLoginRegisterForms('login')">Connectez-vous</a> à votre sac à dos académique <br>ou <a href="#" @click="() => ShowLoginRegisterForms('register')">créez un compte</a> pour obtenir ce badge.</span>
-        </div>
+          </div>
         <div class="copyright">  
             <span>Développé pour l'Université Laval.</span>
         </div>
@@ -135,6 +141,7 @@ const cancelEmailVerification = () => {
   }, 5000) // Check every 5 seconds
 
   const ShowLoginRegisterForms = (formType) => {
+  
   store.showForms = true;
   store.formToShow = formType; // Set the form type
 }
@@ -336,7 +343,7 @@ z-index:20;
 
 .header::after {
     background-color: var(--color-theme-accent);
-    top: 95px;
+    top: 90px;
     content: "";
     display: block;
     height: 4px;
@@ -403,7 +410,8 @@ z-index:20;
     line-height: 16px;
     color: var(--color-theme-accent);
     font-weight: 600;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
+    margin-top: -16px;
 }
 
 
@@ -413,7 +421,7 @@ z-index:20;
     color: #000;
     font-weight: 300;
     line-height: 130%;
-    margin-bottom: 26px;
+    margin-bottom: 18px;
 }
 
 .content .badge-infos strong {
@@ -596,6 +604,32 @@ z-index:20;
   font-size: 18px;
   margin-top: 30px;
   margin-bottom: 40px;
+}
+
+
+.badge-informations {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  margin-left: 2px;
+  margin-bottom: 8px;
+}
+
+
+.badge-informations h4 {
+  font-size: 12px;
+  font-family: 'Source Sans 3';
+  font-weight: 500;
+  color:#969da5;
+}
+
+.badge-informations:hover i,
+.badge-informations:hover h4 {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--color-theme-accent);
 }
 
 </style>

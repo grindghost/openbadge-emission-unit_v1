@@ -31,6 +31,7 @@ const earnBadge = async (projectId) => {
     emissionDate.value = result.data.assertion.issuedOn;
     badgeImageUrl.value = result.data.badgeImageUrl;
     store.assertionData = result.data.assertion;
+    store.badgeStatus = 'new';
 
   } catch (error) {
     // If the function threw an error, handle it based on the error code.
@@ -40,6 +41,7 @@ const earnBadge = async (projectId) => {
         emissionDate.value = error.response.data.assertion.issuedOn;
         badgeImageUrl.value = error.response.data.badgeImageUrl;
         store.assertionData = error.response.data.assertion;
+        store.badgeStatus = 'existing';
 
       } else if (error.response.status === 403) {
 
@@ -54,6 +56,7 @@ const earnBadge = async (projectId) => {
         badgeImageUrl.value = error.response.data.badgeImageUrl;
         store.assertionData = error.response.data.assertion;
         store.assertionData.badgeStatus = 'revoked';
+        store.badgeStatus = 'revoked';
       
       } else if (error.response.status === 410) {
         message.value = 'This badge has expired.';

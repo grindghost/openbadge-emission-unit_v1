@@ -28,27 +28,35 @@
               <span>Ajoutez-le à votre sac à dos académique</span>
           </div>
               <!-- backpack button -->
-              <img src="@/assets/backpack-icon.svg" class="backpack-button" alt="" @click="sendDownloadBackpackRequest">
+              <img v-if="badgeImageUrl && badgeImageLoaded" src="@/assets/backpack-icon.svg" class="backpack-button" alt="" @click="sendDownloadBackpackRequest">
 
           <!-- Small bottom blue line in ::after -->
       </div>
 
-
       <div v-if="badgeImageUrl && badgeImageLoaded" class="content">
           <!-- Left side with the badge image -->
+          
           <div class="badge">
              <!--  <img :src="badgeImageUrl"  class="badge-image bounce-in"> -->
              <img :src="imgUrl" 
                   :class="['badge-image', 'bounce-in', (store.assertionData.badgeStatus == 'revoked' || store.assertionData.badgeStatus == 'expired') ? 'revoked' : '']">
-            <i v-if="store.assertionData.badgeStatus == 'revoked' || store.assertionData.badgeStatus == 'expired'" class="fa-solid fa-triangle-exclamation"></i>
+                  <BadgeStatusIcon class="badge-status-icon" :status="store.badgeStatus" />
+ 
+                  <i v-if="store.assertionData.badgeStatus == 'revoked' || store.assertionData.badgeStatus == 'expired'" class="fa-solid fa-triangle-exclamation"></i>
 
 
               <img src="@/assets/shadow.svg" class="shadow fade-in">
           </div> 
           <!-- Right side with the badge infos -->
           <div class="badge-infos fade-in">
-                  <h3>{{ `${store.targetBadge.name} | ${store.targetBadge.badgeClass}` }}</h3>
-                  <p v-if="message" v-html="message"></p>
+                <h3>{{ `${store.targetBadge.name}` }}</h3>
+                <a :href="store.assertionData.verify.url" target="_blank" style="text-decoration: none;">
+                <div class="badge-informations">
+                  <i class="fa-solid fa-up-right-from-square"></i>
+                  <h4>Attestation ID: <span style="font-weight: 800;">{{ `${store.assertionData.uid}` }}</span></h4>
+                </div>
+              </a>
+                <p v-if="message" v-html="message"></p>
                   <button @click="downloadBadge" :disabled="store.assertionData.badgeStatus == 'revoked'">Télécharger mon badge</button>
 
                   <!-- Open badge mention -->
@@ -91,6 +99,7 @@
 
   import earnBadge, { message, badgeImageUrl, emissionDate } from '../badge'
   import CertificateIcon from '@/components/CertificateIcon.vue';
+  import BadgeStatusIcon from '@/components/BadgeStatusIcon.vue';
 
   import downloadBackpack from '../backpack' 
   const store = useUserStore(); // get store
@@ -327,7 +336,7 @@ const badgeImageLoaded = ref(false);
 
 .header::after {
     background-color: var(--color-theme-accent);
-    top: 95px;
+    top: 90px;
     content: "";
     display: block;
     height: 4px;
@@ -394,7 +403,8 @@ const badgeImageLoaded = ref(false);
     line-height: 16px;
     color: var(--color-theme-accent);
     font-weight: 600;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
+    margin-top: -16px;
 }
 
 
@@ -404,7 +414,7 @@ const badgeImageLoaded = ref(false);
     color: #000;
     font-weight: 300;
     line-height: 130%;
-    margin-bottom: 26px;
+    margin-bottom: 18px;
 }
 
 .content .badge-infos strong {
@@ -619,7 +629,49 @@ z-index:20;
 }
 
 
-  
+.badge-informations {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  margin-left: 2px;
+  margin-bottom: 8px;
+  color:#c1c9d2;
+}
+
+
+.badge-informations h4 {
+  font-size: 12px;
+  font-family: 'Source Sans 3';
+  font-weight: 500;
+  color:#969da5;
+}
+
+.badge-informations:hover i,
+.badge-informations:hover h4 {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--color-theme-accent);
+}
+
+@keyframes bounceIn {
+    0% {
+      transform: scale(0.5);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+.badge-status-icon {
+    filter: none;
+    opacity: 1;
+    animation: bounceIn 1s;
+}
 
 </style>
   

@@ -35,7 +35,9 @@ export const useUserStore = defineStore({
     }, 
     */
     showForms: false,
-    formToShow: "login"
+    formToShow: "login",
+    badgeStatus: "",
+    
   }),
   actions: {
     setUser(user) {

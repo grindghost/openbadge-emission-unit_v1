@@ -48,9 +48,11 @@ router.beforeEach((to, from, next) => {
   const projectId = to.query.projectId
   const store = useUserStore();
   
+  /*
   console.log('Current URL:', to.fullPath);
   console.log('Captured projectId:', projectId);
   console.log('Initial stored projectId:', store.projectId);
+  */
 
   // Redirect to project if logged in (previous)
   if (to.path === '/login' && auth.currentUser) {
