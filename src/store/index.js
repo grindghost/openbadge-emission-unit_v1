@@ -36,7 +36,7 @@ export const useUserStore = defineStore({
     */
     showForms: false,
     formToShow: "login",
-    badgeStatus: "",
+    badgeStatus: "new",
     
   }),
   actions: {
@@ -135,6 +135,22 @@ export const useUserStore = defineStore({
       this.showForms = false
       router.push('/login')
     },
+
+    async preFetchProject() {
+
+      // Get the default projectId from the configs, if none is provided.
+      if (this.projectId == null) {
+        this.projectId = this.publicConfigs.defaultProject;
+      }
+      // ...
+
+      const projectRef = await get(ref_fb(db, 'projects/' + this.projectId))
+      const projectData = projectRef.val() 
+      
+      return projectData;
+
+    },
+
     async fetchTargetedBadge() {
 
       // Get the default projectId from the configs, if none is provided.
@@ -163,10 +179,18 @@ export const useUserStore = defineStore({
       const configsRef = await get(ref_fb(db, 'configs/'))
       const configsData = configsRef.val()      
       this.publicConfigs = configsData
+      
+      // Get the maintenance status of the project
+      const prefetchedproject = await this.preFetchProject()
+      const projectMaintenanceStatus = prefetchedproject.maintenance
+
+      // If the project is in maintenance mode, set the maintenance status of the site to true.
+      if (projectMaintenanceStatus == true) {
+        this.publicConfigs.maintenance = true
+      }
 
       // If the site is not in maintenance mode, fetch the user.
       if (this.publicConfigs.maintenance == false) {
-
         this.fetchUser()
         this.fetchTargetedBadge();
         

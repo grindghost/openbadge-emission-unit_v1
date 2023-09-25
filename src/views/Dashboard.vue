@@ -96,7 +96,7 @@
   import Bowser from 'bowser';
   import { ref, onMounted } from 'vue';
   import { useUserStore } from '@/store'
-
+  import { launchConfettis } from '@/helpers/confettis'
   import earnBadge, { message, badgeImageUrl, emissionDate } from '../badge'
   import CertificateIcon from '@/components/CertificateIcon.vue';
   import BadgeStatusIcon from '@/components/BadgeStatusIcon.vue';
@@ -185,6 +185,11 @@ const badgeImageLoaded = ref(false);
       try {
         // Fetch the targeted badge image before displaying the component
         setTimeout(() => {
+
+        if (store.publicConfigs.maintenance == true) {
+          return
+        }
+
         fetch(store.publicConfigs.proxyURL + store.targetBadge.image)
           .then(response => {
               if (!response.ok) {
@@ -192,12 +197,21 @@ const badgeImageLoaded = ref(false);
             }
             return response.blob();  // Use blob() for images
           })
-          .then(imageBlob => {
+          .then(async imageBlob => {
             // Convert blob to a local URL and update the image src
             const imageUrl = URL.createObjectURL(imageBlob);
             imgUrl.value = imageUrl;
             badgeImageLoaded.value = true;
-            earnBadge(store.projectId);
+            await earnBadge(store.projectId);
+
+            // If the badge is new, launch the confettis              
+            setTimeout(() => {
+              if (store.badgeStatus == 'new') {
+                // console.log('badgeStatus', store.badgeStatus)
+                launchConfettis();
+              }              
+            }, 1500);
+            
             
           })
           .catch(error => {

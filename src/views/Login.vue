@@ -19,6 +19,7 @@
 
     <!-- White box with shadow -->
     <div v-if="!store.publicConfigs.maintenance" :class="{ 'wrapper': true, 'blurred': store.showForms }">
+      <!-- <div v-if="getMaintenanceStatus()" :class="{ 'wrapper': true, 'blurred': store.showForms }"> -->
         <!-- header -->
         <div class="header fade-in">
         
@@ -131,6 +132,22 @@
   }
 })
 
+const getMaintenanceStatus = async () => {
+  if (store.publicConfigs.maintenance == false) {
+    
+    if (store.project.maintenance == true) {
+      console.log(store.project.maintenance, "project in maintenance")
+      return store.project.maintenance;
+    } else {
+      console.log(store.project.maintenance, "project not in maintenance")
+      return store.publicConfigs.maintenance;
+    }
+  } else {
+    console.log("application is in maintenance")
+    return store.publicConfigs.maintenance;
+  }
+}
+
 const cancelEmailVerification = () => {
   store.cancelEmailVerification();
 }
@@ -149,6 +166,11 @@ const cancelEmailVerification = () => {
   onMounted(() => {
     // Fetch the targeted badge image before displaying the component
     setTimeout(() => {
+
+      if (store.publicConfigs.maintenance == true) {
+        return
+      }
+
       fetch(store.publicConfigs.proxyURL + store.targetBadge.image)
         .then(response => {
             if (!response.ok) {
